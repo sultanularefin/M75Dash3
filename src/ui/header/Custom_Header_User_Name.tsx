@@ -97,7 +97,7 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                         <Ionicons
                             name='arrow-back-sharp'
                             size={40}
-                            color='black'
+                            color='dodgerblue'
                         />
                     </TouchableOpacity>
                 </View>
@@ -118,7 +118,7 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                 }}
                 >
                     <Text style={{
-                        color: 'black',
+                        color: 'dodgerblue',
                         fontSize: font_size,
                         fontWeight: '600', //'bold',
                     }}>{name_String}</Text>

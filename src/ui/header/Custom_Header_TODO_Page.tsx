@@ -67,11 +67,6 @@ const Custom_Header_TODO_Page: React.FC<
           height: '100%',
           flexDirection: 'row',
           justifyContent: 'flex-start',
-          // width: total_Width,
-          // borderWidth: 1,
-          // borderColor: '#000a12',
-          // backgroundColor: 'white',
-          // backgroundColor: 'transparent',
           flex: 10,
         }}>
         {/*partner name and image starts here*/}
@@ -87,42 +82,37 @@ const Custom_Header_TODO_Page: React.FC<
           }}>
           {/*back button begins here...*/}
 
-            {
-                (!show_back_button)?(
-
-                    <View style={{
-                        width: back_Button_width,
-                        height: '100%',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center', // 16
-                        // paddingStart: 12,  // 16
-                        flex: 1.5, // 1.5+ 3.8 = 5.3 ;;; flex:5.3, // 5.3+1.5 = 6.5; +3
-                    }}>
-
-                    </View>
-                ):(
-                    <Pressable
-                        style={({pressed}) => [
-                            {
-                                backgroundColor: pressed ? 'lightsteelblue' : 'transparent',
-                                width: back_Button_width,
-                                height: '100%',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center', // 16
-                                // paddingStart: 12,  // 16
-                                flex: 1.5, // 1.5+ 3.8 = 5.3 ;;; flex:5.3, // 5.3+1.5 = 6.5; +3
-                            },
-                        ]}
-                        onPress={() => {
-                            save_before_Leave_2();
-                        }}>
-                        <Ionicons name="arrow-back" size={30} color="black" />
-                    </Pressable>
-                )
-            }
-
+          {!show_back_button ? (
+            <View
+              style={{
+                width: back_Button_width,
+                height: '100%',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center', // 16
+                // paddingStart: 12,  // 16
+                flex: 1.5, // 1.5+ 3.8 = 5.3 ;;; flex:5.3, // 5.3+1.5 = 6.5; +3
+              }}></View>
+          ) : (
+            <Pressable
+              style={({pressed}) => [
+                {
+                  backgroundColor: pressed ? 'lightsteelblue' : 'transparent',
+                  width: back_Button_width,
+                  height: '100%',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center', // 16
+                  // paddingStart: 12,  // 16
+                  flex: 1.5, // 1.5+ 3.8 = 5.3 ;;; flex:5.3, // 5.3+1.5 = 6.5; +3
+                },
+              ]}
+              onPress={() => {
+                save_before_Leave_2();
+              }}>
+              <Ionicons name="arrow-back" size={30} color="black" />
+            </Pressable>
+          )}
 
           {/*back button ends here...*/}
 
@@ -165,7 +155,7 @@ const Custom_Header_TODO_Page: React.FC<
                       // color: 'blue',
                       fontWeight: 'bold',
                       textAlign: 'left',
-                      fontSize: 18,
+                      fontSize: 14,
                     }}>
                     {all_todos.length}
                   </Text>
@@ -186,8 +176,8 @@ const Custom_Header_TODO_Page: React.FC<
                   fontSize: 20,
                   fontWeight: 'bold',
                   alignSelf: 'center',
-                  // color: 'white',
-                  color: 'black',
+                  color: 'white',
+                  letterSpacing: 1.1,
                 }}>
                 {page_title.length < 18
                   ? page_title

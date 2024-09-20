@@ -10,6 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 // import { enableMapSet } from 'immer';
 import toDoSlice from "../features/auth/todo_Slice.ts";
+import Scan_Slice from "../features/scan/scan_Slice.ts";
 
 
 
@@ -33,6 +34,8 @@ const combinedReducer = combineReducers({
 
 
     todo_Reducer: toDoSlice,
+    scan_Reducer: Scan_Slice,
+
 
 
 });

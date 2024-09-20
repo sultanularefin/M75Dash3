@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 export interface Props {
   // showFloatingButtonBoolean: boolean;
   isKeyboardVisibleStateBoolean: boolean;
-  // deviceWidth: number,
+
   deviceHeightFB: number;
   // add_new_button_pressed: () => void;
   navigation: any;

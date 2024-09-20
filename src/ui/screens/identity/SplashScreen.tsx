@@ -7,6 +7,8 @@ import {
   Platform,
   SafeAreaView,
   Linking,
+  useWindowDimensions,
+  Text,
   // AsyncStorage,
 } from 'react-native';
 import {CommonActions, useFocusEffect} from '@react-navigation/native';
@@ -17,19 +19,15 @@ import Snackbar from 'react-native-snackbar';
 
 import {useAppDispatch, useAppSelector} from '../../../appStore/app/hooks';
 
-import {PayloadAction, unwrapResult} from '@reduxjs/toolkit';
-
-// import {KeyValuePair} from "@react-native-async-storage/async-storage/lib/typescript/types";
-
 import {RouteProp} from '@react-navigation/core/src/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Native_Root_Stack_ParamList} from '../../../App';
 // import ToDo_Home from '../ToDo_Home.tsx';
 
-const splashImage = require('../../../assets/bs_23_logo.jpg');
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {populate_items_to_empty_array} from "../../../appStore/features/auth/todo_Slice.ts";
-
+import {populate_items_to_empty_array} from '../../../appStore/features/auth/todo_Slice.ts';
+import Indicator_With_Loading_TextBottom from '../../indicator/Indicator_With_Loading_TextBottom.tsx';
+import {ukbd_navy_blue} from '../../ui_utils/important_Colors.ts';
 
 export interface AuthStateInterface {
   apiInovocatoinStatus: string;
@@ -39,12 +37,12 @@ export interface AuthStateInterface {
   errorMessage: string;
 
   /*
-      localStorage: localStorageInterface,
+          localStorage: localStorageInterface,
 
-      loggerPerson: weXprez_Logger_User_Interface;// PREVIOUSLY IMPORTED FROM LOGIN SCREEN PAGE. USED THIS INTERFACE PERSON FROM AUTHSLICE
-      // ON SEPTEMBER 1ST 2021
+          loggerPerson: weXprez_Logger_User_Interface;// PREVIOUSLY IMPORTED FROM LOGIN SCREEN PAGE. USED THIS INTERFACE PERSON FROM AUTHSLICE
+          // ON SEPTEMBER 1ST 2021
 
-      */
+          */
 }
 
 export interface SplashScreen_Props {
@@ -68,41 +66,41 @@ const SplashScreen = ({
 
   const isIOS = Platform.OS === 'ios';
 
+  const deviceWidth = useWindowDimensions().width;
+  const deviceHeight = useWindowDimensions().height;
+
   const [loadingState, setLoadingState] = useState<boolean>(false);
 
-  const navigate_To_Home_Screen = () => {
+  // const navigate_To_Home_Screen = () => {
+  //   return navigation.dispatch(
+  //     CommonActions.reset({
+  //       index: 0,
+  //       routes: [{name: 'ToDo_Home_Page'}],
+  //     }),
+  //   );
+  // };
 
 
-
-
-        return navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'ToDo_Home'}],
-          }),
-        );
-
-
-
-
+  const navigate_To_Home__Screen_For_Scanning = () => {
+    return navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Scanner_Root_Page'}],
+        }),
+    );
   };
 
   const check_local_Storage = async () => {
-
-    console.log("at here <<check_local_Storage>>");
-
+    console.log('at here <<check_local_Storage>>');
 
     let values__Wex_cred;
     try {
-      values__Wex_cred = await AsyncStorage.getItem(
-        'todos',
-      ); //.then();
+      values__Wex_cred = await AsyncStorage.getItem('todos'); //.then();
     } catch (error) {
       console.log('error in useEffect SplashScreen page: ', error);
     }
 
-
-    console.log("values__Wex_cred: ",values__Wex_cred);
+    console.log('values__Wex_cred: ', values__Wex_cred);
 
     if (values__Wex_cred !== null) {
       // you can ts_ignore this line march___29 ___actually some days ago.
@@ -112,51 +110,19 @@ const SplashScreen = ({
       // console.log("entries2: ", entries2);
       const obj2 = Object.fromEntries(entries2);
 
-      const payload_is_ios: {is_Ios_Device: boolean} = {
-        is_Ios_Device: isIOS,
-      };
-
       if (obj2.login_id !== null) {
         console.log('need to populate');
-        /*
-                  const login_Payload: login_Request_API_payload_interface = {
-                    // userName: (obj2.user_name === null)
-                    //     ? ""
-                    //     : obj2.user_name,
-                    user_name: (obj2.user_name === null)
-                        ? ""
-                        : obj2.user_name,
-                    mobile_no: (obj2.mobile_no === null)
-                        ? ""
-                        : obj2.mobile_no,
-
-                    // obj2.mobile_no,
-                    password: (obj2.pw === null) ? "" : obj2.pw,
-                  };
-                  return login_Common_Code__Splash_AND_Login_Screen_Page(login_Payload);
-
-                  */
 
         return setTimeout(() => {
-          // resolve("foo");
-          navigate_To_Home_Screen();
-        }, 600);
+          navigate_To_Home__Screen_For_Scanning();
+        }, 1000);
       }
     } else {
-
-
-      console.log("at else local data not found");
-
-      dispatch(populate_items_to_empty_array(null));
+      console.log('at else local data not found');
 
       return setTimeout(() => {
-        // resolve("foo");
-        navigate_To_Home_Screen();
-      }, 600);
-
-
-
-
+        navigate_To_Home__Screen_For_Scanning();
+      }, 1000);
     }
   };
 
@@ -166,7 +132,6 @@ const SplashScreen = ({
         console.log('at useEffect of SplashScreen ');
 
         check_local_Storage();
-
       };
       main();
     }, [
@@ -179,16 +144,25 @@ const SplashScreen = ({
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={splashImage}
+    <SafeAreaView style={spl_styles.container}>
+      <View style={spl_styles.common_view_container} />
+      <View
         style={{
-          height: '100%',
-          width: '100%',
-        }}
-        resizeMode={'contain'}
-        // resizeMethod={'contain'}
-      />
+          display: 'flex',
+          width: deviceWidth,
+          flexDirection: 'column',
+          flex: 2,
+          backgroundColor: 'transparent',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={spl_styles.text_Style}>My Name is: Sultanul Arefin</Text>
+        <Indicator_With_Loading_TextBottom
+          device_width={deviceWidth}
+          device_height={deviceHeight}
+        />
+      </View>
+      <View style={spl_styles.common_view_container} />
     </SafeAreaView>
   );
 
@@ -196,16 +170,26 @@ const SplashScreen = ({
 };
 export default SplashScreen;
 
-const styles = StyleSheet.create({
-  activityIndicator: {
+const spl_styles = StyleSheet.create({
+  common_view_container: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 4,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
     alignItems: 'center',
-    height: 80,
+  },
+  text_Style: {
+    textAlign: 'center',
+    color: 'dodgerblue',
+    // paddingTop: 20,
+    fontWeight: 'bold',
   },
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    // backgroundColor: '#ffffff',
-    backgroundColor: '#000000',
+    backgroundColor: '#ffffff',
+    // backgroundColor: '#000000',
     flex: 10,
     justifyContent: 'center',
   },
