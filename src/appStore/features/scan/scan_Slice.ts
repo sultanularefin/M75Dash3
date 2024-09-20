@@ -125,11 +125,21 @@ const current_scan_result_found_and_update_2 = (
   const old_items_temp = state.scan_Items;
 
   if (old_items_temp.length > 0) {
-    old_items_temp.unshift(new_scan_item);
-    state.scan_Items = old_items_temp;
+    const hasName = old_items_temp.some((obj:old_scan_result_data_interface) => obj.value === new_scan_item.value);
+    if(!hasName){
+      old_items_temp.unshift(new_scan_item);
+      state.scan_Items = old_items_temp;
+    }
+
   } else {
-    old_items_temp.push(new_scan_item);
-    state.scan_Items = old_items_temp;
+
+    const hasName = old_items_temp.some((obj:old_scan_result_data_interface) => obj.value === new_scan_item.value);
+    if(!hasName){
+
+      old_items_temp.push(new_scan_item);
+      state.scan_Items = old_items_temp;
+    }
+
   }
 
   state.current_Item = found_Code;

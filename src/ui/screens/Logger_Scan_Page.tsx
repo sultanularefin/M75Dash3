@@ -264,7 +264,7 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
   const label = current_scan_success ? 'Found' : 'Working';
 
 
-  const label_Height= 42;
+  const label_Height= 70;
   const header_height= 40;
   const camera_height = displayHeight -(header_height+label_Height);
 

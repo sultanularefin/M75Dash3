@@ -18,6 +18,7 @@ import {
     delete_one_scanned_item_From_Scanning_Page,
 } from '../../appStore/features/scan/scan_Slice.ts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {ukbd_red, ukbd_red_light} from "../ui_utils/important_Colors.ts";
 
 export interface Label_Scan_Page_Props {
     comp_Height: number;
@@ -39,7 +40,7 @@ const Label_Component_Scan_P: React.FC<Label_Scan_Page_Props> = ({
     return (
         <View
             style={{
-                height: comp_Height,
+                height: comp_Height, // 70
                 width: comp_width,
                 // marginTop: 5,
                 alignSelf: 'center',
@@ -51,7 +52,7 @@ const Label_Component_Scan_P: React.FC<Label_Scan_Page_Props> = ({
             }}>
             <View
                 style={{
-                    height: comp_Height - 5,
+                    height: comp_Height,
                     width: comp_width - (60),
                     backgroundColor: 'transparent',
                     flexDirection: 'column',
@@ -60,14 +61,40 @@ const Label_Component_Scan_P: React.FC<Label_Scan_Page_Props> = ({
                     alignSelf: 'center',
                 }}>
                 {current_Item_Detail?.length > 0 ? (
-                    <Text style={{
-                        ...Label_Scan_Page_Styles.loginText,
-                        letterSpacing: 1,
-                    }}
-                    >
-                        Type:{current_Item_Detail[0]?.type}, Value:
-                        {current_Item_Detail[0].value}
-                    </Text>
+                    <View>
+
+                        <View>
+                            <Text style={{
+                                ...Label_Scan_Page_Styles.loginText,
+                                letterSpacing: 1,
+                            }}
+                            ><Text style={{
+                                fontWeight: 'bold',
+                                fontSize: 18,
+                            }}>Type: </Text>
+                                {current_Item_Detail[0]?.type}
+                            </Text>
+
+                        </View>
+
+                        <View>
+                            <Text style={{
+                                ...Label_Scan_Page_Styles.loginText,
+                                letterSpacing: 1,
+                            }}
+                            >
+                                <Text style={{
+                                    fontWeight: 'bold',
+                                    fontSize: 18,
+                                }}>Value: </Text>
+                                {current_Item_Detail[0].value}
+                            </Text>
+                        </View>
+                    </View>
+
+
+
+
                 ) : (
                     <Text style={Label_Scan_Page_Styles.loginText}>
                         Detail Will be visible here...
@@ -82,8 +109,9 @@ const Label_Component_Scan_P: React.FC<Label_Scan_Page_Props> = ({
                         {
                             zIndex: 2,
                             backgroundColor: pressed ? 'lightsteelblue' : 'transparent',
-                            height: 60,
-                            width: 60,
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+
                         },
                     ]}
                     onPress={() => {
@@ -95,11 +123,11 @@ const Label_Component_Scan_P: React.FC<Label_Scan_Page_Props> = ({
                         <Ionicons
                             size={40}
                             style={{
-                                color: 'cyan',
+                                color: ukbd_red,
                                 textAlign: 'left',
                                 alignSelf: 'center',
                             }}
-                            name={'remove-sharp'}
+                            name={'remove-circle-outline'}
                         />
                     )}
                 </Pressable>
@@ -126,7 +154,7 @@ const Label_Scan_Page_Styles = StyleSheet.create({
     loginText: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 14,
         letterSpacing: 1.2,
     },
 });

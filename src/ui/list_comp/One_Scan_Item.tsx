@@ -16,7 +16,8 @@ import hairlineWidth = StyleSheet.hairlineWidth;
 import {old_scan_result_data_interface} from '../../interfaces/scan/scan_interfaces.ts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useAppDispatch} from '../../appStore/app/hooks.ts';
-import {delete_one_scanned_item} from "../../appStore/features/scan/scan_Slice.ts";
+import {delete_one_scanned_item} from '../../appStore/features/scan/scan_Slice.ts';
+import {ukbd_red} from "../ui_utils/important_Colors.ts";
 
 // import {TodoItem} from '../../interfaces/todo/todo_interfaces.ts';
 // import ToDo_Details_Comp from './children/ToDo_Details_Comp.tsx';
@@ -36,7 +37,6 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
   t_width,
   navigation,
 }) => {
-
   const indexPrimary = index;
 
   const first_part_height = comp_Height / 3;
@@ -50,25 +50,9 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
         // backgroundColor: 'tomato',
         backgroundColor: '#f2f2f2',
 
-        shadowColor: '#00000021',
-
-        shadowOffset: {
-          width: 2,
-          height: 2,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-
-        // backgroundColor: '#fff',
-
-        paddingRight: 16,
-        paddingVertical: 8,
-
-        // backgroundColor: 'red',
-        // marginVertical: 5,
         borderRadius: 15,
         borderWidth: 2,
-        marginHorizontal: 5,
+
         borderColor: 'lightslategrey',
         flexDirection: 'column',
         width: t_width - 20,
@@ -82,6 +66,7 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
           justifyContent: 'flex-start',
           alignItems: 'center',
           alignSelf: 'center',
+          paddingStart: 10,
         }}>
         <View
           style={{
@@ -111,18 +96,19 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
           style={({pressed}) => [
             {
               backgroundColor: pressed ? 'lightsteelblue' : 'transparent',
+              flexDirection: 'column',
+              justifyContent: 'center',
             },
           ]}
           onPress={() => {
-
             dispatch(delete_one_scanned_item(One_Scan_Item_Data));
             return;
           }}>
           {({pressed}) => (
             <Ionicons
-              size={60}
+              size={40}
               style={{
-                color: 'cyan',
+                color: ukbd_red,
                 textAlign: 'center',
                 alignSelf: 'center',
               }}
