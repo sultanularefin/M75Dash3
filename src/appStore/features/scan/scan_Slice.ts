@@ -40,13 +40,10 @@ const delete_one_scanned_item_From_Scanning_Page_2  = (
     action: PayloadAction<boolean>,
 ) => {
 
-  console.log("at <<delete_one_scanned_item_From_Scanning_Page_2>> and payload.action:",action.payload);
-
 
   const temp_current_item = state.current_Item;
 
 
-  console.log("temp_current_item[0].value: ",temp_current_item[0].value);
   const old_scan_items = state.scan_Items;
 
   state.scan_Items = old_scan_items.filter(
@@ -118,7 +115,7 @@ const current_scan_result_found_and_update_2 = (
 ) => {
   const found_Code: Code[] = action.payload;
 
-  console.log('found_Code: ', found_Code);
+
 
   const new_scan_item: old_scan_result_data_interface = {
     type: found_Code[0]?.type,

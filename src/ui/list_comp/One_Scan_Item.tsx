@@ -36,7 +36,7 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
   t_width,
   navigation,
 }) => {
-  // console.log('One_Scan_Item_Data: ', One_Scan_Item_Data);
+
   const indexPrimary = index;
 
   const first_part_height = comp_Height / 3;
@@ -114,7 +114,7 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
             },
           ]}
           onPress={() => {
-            console.log('pressed');
+
             dispatch(delete_one_scanned_item(One_Scan_Item_Data));
             return;
           }}>

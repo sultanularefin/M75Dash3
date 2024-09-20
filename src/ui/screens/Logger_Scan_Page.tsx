@@ -225,8 +225,6 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
 
 
 
-  console.log("current_scanning_state_State_0: ",current_scanning_state_State_0);
-  console.log("current_scan_success: ",current_scan_success);
 
   const deviceWidth = useWindowDimensions().width;
   const deviceHeight = useWindowDimensions().height;
@@ -247,7 +245,7 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
       // codeTypes: ['upc-a'],
     onCodeScanned: (codes: Code[]) => {
       dispatch(current_scan_result_found_and_update(codes));
-      console.log(`Scanned ${codes.length} codes!`);
+      // console.log(`Scanned ${codes.length} codes!`);
     },
   });
 
@@ -270,8 +268,7 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
   const header_height= 40;
   const camera_height = displayHeight -(header_height+label_Height);
 
-  console.log("displayHeight: ",displayHeight);
-  console.log("camera_height: ",camera_height);
+
 
 
 

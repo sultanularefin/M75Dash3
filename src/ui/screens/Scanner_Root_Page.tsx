@@ -54,7 +54,6 @@ const Scanner_Root_Page: React.FC<Scanner_Root_Page_Props> = ({navigation}) => {
 
     const [master_Loading_State, set_Master_Loading_State] = useState(false);
 
-    console.log("master_Loading_State: ", master_Loading_State);
 
     const all_scanned_items: old_scan_result_data_interface[] = useAppSelector(all_items_where_scan_worked);
 

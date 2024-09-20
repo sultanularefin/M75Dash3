@@ -21,7 +21,7 @@ const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
 
 
     if (action.type === "auth/clearState") {
-        console.log("action.type:=-========================= ", "auth/logout");
+
         state = {} as RootState;
     }
     return combinedReducer(state, action);

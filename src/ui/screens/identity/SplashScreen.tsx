@@ -91,7 +91,6 @@ const SplashScreen = ({
   };
 
   const check_local_Storage = async () => {
-    console.log('at here <<check_local_Storage>>');
 
     let values__Wex_cred;
     try {
@@ -100,7 +99,7 @@ const SplashScreen = ({
       console.log('error in useEffect SplashScreen page: ', error);
     }
 
-    console.log('values__Wex_cred: ', values__Wex_cred);
+
 
     if (values__Wex_cred !== null) {
       // you can ts_ignore this line march___29 ___actually some days ago.
@@ -111,14 +110,14 @@ const SplashScreen = ({
       const obj2 = Object.fromEntries(entries2);
 
       if (obj2.login_id !== null) {
-        console.log('need to populate');
+
 
         return setTimeout(() => {
           navigate_To_Home__Screen_For_Scanning();
         }, 1000);
       }
     } else {
-      console.log('at else local data not found');
+
 
       return setTimeout(() => {
         navigate_To_Home__Screen_For_Scanning();
@@ -129,8 +128,6 @@ const SplashScreen = ({
   useFocusEffect(
     useCallback(() => {
       const main = async () => {
-        console.log('at useEffect of SplashScreen ');
-
         check_local_Storage();
       };
       main();

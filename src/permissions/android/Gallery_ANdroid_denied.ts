@@ -3,7 +3,7 @@ import {Alert} from "react-native";
 
 const Gallery_ANdroid_denied= (statuses2: string)=>{
 
-    console.log("statuses2: ",statuses2);
+
 
 
     return  Alert.alert(

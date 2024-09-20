@@ -13,8 +13,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useAppDispatch, useAppSelector} from '../../appStore/app/hooks.ts';
 
 import {Code} from 'react-native-vision-camera/src/types/CodeScanner.ts';
-import {current_Item_When_Scan_Succeeded,
-    // delete_one_scanned_item
+import {
+    current_Item_When_Scan_Succeeded,
+    delete_one_scanned_item_From_Scanning_Page,
 } from '../../appStore/features/scan/scan_Slice.ts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -87,7 +88,7 @@ const Label_Component_Scan_P: React.FC<Label_Scan_Page_Props> = ({
                     ]}
                     onPress={() => {
 
-                        dispatch(delete_one_scanned_item_From_Scanning_Page(One_Scan_Item_Data));
+                        dispatch(delete_one_scanned_item_From_Scanning_Page(true));
                         return;
                     }}>
                     {({pressed}) => (

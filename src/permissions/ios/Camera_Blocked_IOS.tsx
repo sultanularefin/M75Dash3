@@ -16,7 +16,7 @@ const Camera_Blocked_IOS = (status: string)=>{
 
         ]
     );*/
-    console.log(" Camera_Blocked_IOS : status:",status);
+
 
     Snackbar.show({
 
