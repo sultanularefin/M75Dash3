@@ -14,5 +14,7 @@ const Indicator_Common_Without_Params=()=>{
             color="dodgerblue"
         />
     );
+
+
 };
 export default Indicator_Common_Without_Params;

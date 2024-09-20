@@ -18,6 +18,7 @@ export interface Custom_Header_User_Name_Props{
     total_Width: number,
     navigation: any,
     save_before_Leave: ()=>void,
+    show_border: boolean,
 
 }
 
@@ -29,7 +30,8 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                                                                               navigation,
                                                                               total_Height,
                                                                               total_Width,
-                                                                              save_before_Leave
+                                                                              save_before_Leave,
+                                                                              show_border,
 
                                                                           }) => {
 // const Custom_Header_User_Name= () => {
@@ -44,11 +46,12 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
 
     return(
         <View style={{
-            height: total_Height/14,
+            height: total_Height,
             flexDirection: 'column',
             justifyContent: 'flex-start',
             // backgroundColor: 'transparent',
             width: total_Width,
+
 
         }}>
 
@@ -60,12 +63,14 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                     flexDirection: 'row',
                     justifyContent: 'flex-start',
                     width: total_Width,
-                    borderBottomWidth: 1,
-                    borderTopWidth: 1,
-                    borderTopColor: '#000a12',
-                    borderBottomColor: '#000a12',
-                    // backgroundColor: 'blue',
-                    // backgroundColor: 'transparent',
+                    // borderBottomWidth: 1,
+                    // borderTopWidth: 1,
+                    // borderTopColor: '#000a12',
+                    // borderBottomColor: '#000a12',
+                    borderBottomWidth: show_border ? 1 : 0,
+                    borderTopWidth: show_border ? 1 : 0,
+                    borderTopColor: show_border ? '#000a12' : 'transparent',
+                    borderBottomColor: show_border ? '#000a12' : 'transparent',
 
 
                 }}

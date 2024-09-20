@@ -23,10 +23,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import {store} from "./appStore/app/store";
 import SplashScreen from "./ui/screens/identity/SplashScreen";
-import ToDo_Home_Page from "./ui/screens/ToDo_Home_Page.tsx";
 
-import Logger_Create_Note_Page from "./ui/screens/Logger_Create_Note_Page.tsx";
-import Logger_Edit_Note_Page from "./ui/screens/Logger_Edit_Note_Page.tsx";
 import Scanner_Root_Page from "./ui/screens/Scanner_Root_Page.tsx";
 import Logger_Scan_Page from "./ui/screens/Logger_Scan_Page.tsx";
 
@@ -49,10 +46,6 @@ export type Native_Root_Stack_ParamList = {
     SplashScreen: {
         name: string,
     };
-    ToDo_Home_Page: undefined,
-    Logger_Create_Note_Page: undefined,
-    Logger_Edit_Note: undefined,
-
     Scanner_Root_Page: undefined,
     Logger_Scan_Page: undefined,
 }
@@ -99,32 +92,11 @@ const App: React.FC<Props> = (props) => {
 
 
                                 <Native_Root_Stack.Screen
-                                    name="ToDo_Home_Page"
-                                    component={ToDo_Home_Page}
-                                    options={{
-                                        headerShown: false,
-                                        // headerShown: true,
-                                    }}
-                                />
-
-
-                                <Native_Root_Stack.Screen
                                     name="Scanner_Root_Page"
                                     component={Scanner_Root_Page}
                                     options={{
                                         headerShown: false,
                                         // headerShown: true,
-                                    }}
-                                />
-
-
-                                <Native_Root_Stack.Screen
-                                    name="Logger_Create_Note_Page"
-                                    component={Logger_Create_Note_Page}
-                                    options={{
-                                        headerShown: false,
-
-
                                     }}
                                 />
 
@@ -137,22 +109,6 @@ const App: React.FC<Props> = (props) => {
 
                                     }}
                                 />
-
-
-
-
-                                <Native_Root_Stack.Screen
-                                    name="Logger_Edit_Note"
-                                    component={Logger_Edit_Note_Page}
-                                    options={{
-                                        headerShown: false,
-
-
-                                    }}
-                                />
-
-
-
 
                             </Native_Root_Stack.Navigator>
                         </NavigationContainer>

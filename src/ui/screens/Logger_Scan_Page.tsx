@@ -1,484 +1,445 @@
-
-
-
-
-import React, {
-    useCallback,
-    useRef,
-    useState
-} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    Image,
-    Keyboard,
-    Modal, NativeSyntheticEvent,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput, TextInputSelectionChangeEventData,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    useWindowDimensions,
-    Pressable,
-    View, PermissionsAndroid
-} from "react-native";
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Keyboard,
+  Modal,
+  NativeSyntheticEvent,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputSelectionChangeEventData,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  useWindowDimensions,
+  Pressable,
+  View,
+  PermissionsAndroid,
+} from 'react-native';
 
-import {Rect,
-    SafeAreaView as SafeArea_View_Context,
-    useSafeAreaFrame,
-    // useSafeAreaInsets
+import {
+  Rect,
+  SafeAreaView as SafeArea_View_Context,
+  useSafeAreaFrame,
 } from 'react-native-safe-area-context';
 
-
-
-import {useAppDispatch, useAppSelector} from "../../appStore/app/hooks";
-import Custom_Header_User_Name from "../header/Custom_Header_User_Name.tsx";
-import {useActionSheet} from "@expo/react-native-action-sheet";
-import Snackbar from "react-native-snackbar";
-import {clear_new_todo_1, new_todo, update_current_new_note} from "../../appStore/features/auth/todo_Slice.ts";
-import {TodoItem, user_todo_item_payload_interface} from "../../interfaces/todo/todo_interfaces.ts";
-import Content_New_To_Do from "../inputs/Content_New_To_Do.tsx";
-import Title_New_ToDo from "../inputs/Title_New_ToDo.tsx";
-import Logger_Create_Note_Button from "../buttons/Logger_Create_Note_Button.tsx";
 import {
-    current_Item_Scan_Success_success,
-    current_Scan_Loading_State_State
-} from "../../appStore/features/scan/scan_Slice.ts";
-import {Camera, Frame, useCameraDevice, useCameraDevices, useFrameProcessor} from "react-native-vision-camera";
-import {new_Theme_Place_Holder_Color} from "../ui_utils/important_Colors.ts";
-import scanQRCodes from "../frame-processors/scanQRCodes.ts";
+  useAppDispatch,
+  useAppSelector
+} from '../../appStore/app/hooks';
+import Custom_Header_User_Name from '../header/Custom_Header_User_Name.tsx';
+import {useActionSheet} from '@expo/react-native-action-sheet';
+import Snackbar from 'react-native-snackbar';
 
+import Logger_Create_Note_Button from '../buttons/Logger_Create_Note_Button.tsx';
+import {
+  all_items_where_scan_worked,
+  current_Item_Scan_Success_success, current_Item_When_Scan_Succeeded,
+  current_scanning_state_State, current_scan_result_found_and_update, update_scanning_state,
+} from '../../appStore/features/scan/scan_Slice.ts';
+import {
+
+  Camera,
+  Frame,
+  useCameraDevice,
+  useCameraDevices,
+  useCodeScanner,
+  useFrameProcessor,
+} from 'react-native-vision-camera';
+import {new_Theme_Place_Holder_Color} from '../ui_utils/important_Colors.ts';
+import scanQRCodes from '../frame-processors/scanQRCodes.ts';
+import {useFocusEffect} from '@react-navigation/native';
+import warning_ios_Camera from '../../permissions/ios/warning_ios_Camera.ts';
+
+import {
+  checkMultiple,
+  PERMISSIONS,
+  requestMultiple,
+  check,
+  request,
+} from 'react-native-permissions';
+import Camera_Blocked_IOS from '../../permissions/ios/Camera_Blocked_IOS.tsx';
+import {Code} from 'react-native-vision-camera/src/types/CodeScanner.ts';
+import Label_Scan_Page from '../buttons/Label_Scan_Page.tsx';
+import Indicator_Common from '../indicator/Indicator_Common.tsx';
+import {old_scan_result_data_interface} from "../../interfaces/scan/scan_interfaces.ts";
 
 export interface Logger_Scan_Page_Props {
-
-
-    navigation:any,
+  navigation: any;
 }
 
+const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
+  const displayWidth = useWindowDimensions().width;
+  const displayHeight = useWindowDimensions().height;
+  const dispatch = useAppDispatch();
+
+  const Text_Input_Logger_Feedz_Content_Ref = useRef<TextInput>(null);
+
+  const [master_Loading_State, set_Master_Loading_State] = useState(false);
+
+  const all_scanned_items:old_scan_result_data_interface[] = useAppSelector(all_items_where_scan_worked);
+
+  const current_Item_Detail:Code[] = useAppSelector(current_Item_When_Scan_Succeeded);
+
+  const current_scanning_state_State_0: boolean = useAppSelector(
+      current_scanning_state_State,
+  );
+  const current_scan_success: string = useAppSelector(
+      current_Item_Scan_Success_success,
+  );
 
 
 
 
 
-const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({ navigation}) => {
-
-    const displayWidth =  useWindowDimensions().width;
-    const displayHeight = useWindowDimensions().height;
-    const dispatch = useAppDispatch();
+  // console.log("current_Item_Detail: ",current_Item_Detail);
+  // console.log("all_scanned_items: ",all_scanned_items);
 
 
 
-
-    const Text_Input_Logger_Feedz_Content_Ref = useRef<TextInput>(null);
-
-
-    const [keyboard_typing_active_State, set_Keyboard_typing_active_State] = useState<boolean>(false);
-    const [post_Button_HTTP_Running_State, set_Post_Button_HTTP_Running_State] = useState(false);
-
-    const [master_Loading_State, set_Master_Loading_State] = useState(false);
+  const TextInput_Report__Cause__Ref = useRef<TextInput>(null);
 
 
 
-    const {showActionSheetWithOptions} = useActionSheet();
+  const closeModal_change_visisble_State = () => {};
+
+  const before_Going_Prev_Screen = () => {
+
+    navigation.goBack();
+  };
 
 
 
-    const new_todo_Item_details: TodoItem = useAppSelector(new_todo);
+  const camera_Android = async () => {
+    // console.log(' at index = = 0  ');
 
-    // console.log("new_todo_Item_details: ",new_todo_Item_details);
-
-
-    const TextInput_Report__Cause__Ref = useRef<TextInput>(null);
-
+    await PermissionsAndroid.check('android.permission.CAMERA').then(
+      async camera_Status => {
 
 
 
-    const android_KeyBoard_Focused__onPressIn__testing = (nativeEvent: any) => {
-
-        // return;
-        // console.log("_____________android_KeyBoard_Focused__onPressIn__testing_____________");
-
-        set_Keyboard_typing_active_State(true);
-
-    };
-
-
-    const closeModal_change_visisble_State = /*async */ (/*value_Not_neccessary:boolean*/) => {
+        // if ((statuses[PERMISSIONS.IOS.CAMERA] !== 'granted') || (statuses[PERMISSIONS.IOS.PHOTO_LIBRARY] !== 'granted')) {
+        // return rmLocalIOS();
+        if (camera_Status) {
+          // setHasPermission(status === 'authorized');
 
 
 
+          setHasPermission(camera_Status);
+        } else {
+          await PermissionsAndroid.request('android.permission.CAMERA').then(
+            async camera_Status_2 => {
+              //PermissionsAndroid.RESULTS
+;
 
-    };
-
-
-
-
-
-    const before_Going_Prev_Screen=()=>{
-
-        clear_one_note();
-        // clear__comments_and_TextInput();
-        navigation.goBack();
-    };
-
-    const clear_one_note = () => {
-
-        //@ts-ignore
-        Text_Input_Logger_Feedz_Content_Ref.current.clear();
-        //@ts-ignore
-        TextInput_Report__Cause__Ref.current.clear();
+              if (camera_Status_2 === 'granted') {
 
 
+                setHasPermission(true);
 
+              } else if (camera_Status_2 === 'denied') {
+                return warning_ios_Camera(camera_Status_2);
+              } else if (camera_Status_2 === 'never_ask_again') {
+                return warning_ios_Camera(camera_Status_2);
+              }
+            },
+          );
+        }
+      },
+    );
+  };
 
-        dispatch(clear_new_todo_1(true));
+  const camra_IOS = async () => {
 
+    await check(PERMISSIONS.IOS.CAMERA).then(async statuses => {
 
-    };
+      if (statuses === 'granted') {
 
+        setHasPermission(true);
+      } else if (statuses === 'blocked') {
+        // setMasterLoadingState(false);
+        return Camera_Blocked_IOS(statuses);
+      } else {
+        //--
+        await request(PERMISSIONS.IOS.CAMERA).then(async camera_Status_2 => {
+          if (camera_Status_2 === 'granted') {
 
+            setHasPermission(true);
 
+          } else {
 
+            return warning_ios_Camera(camera_Status_2);
+          }
+        });
+      }
+    });
+  };
 
-
-
-
-
-
-
-
-    const onEditing_End_Button_Pressed = ()=>{
-
-        console.log("at <<onEditing_End_Button_Pressed>> ");
+  const check_Camera_Permissions = React.useCallback(() => {
+    // camera:
+    if (Platform.OS === 'android') {
+      return camera_Android();
+    } else {
+      return camra_IOS();
     }
+  }, []);
 
-    const onChange_Note_Content = (new_String:string)=>{
+  useFocusEffect(
+    useCallback(() => {
+      // ADDED ON DECEMBER_21__FOR_OFFLINE CACHING...
+
+      const main = async () => {
+        await check_Camera_Permissions();
+      };
+
+      dispatch(update_scanning_state(true));
+
+      main();
+    }, []),
+  );
 
 
-        const obj4: user_todo_item_payload_interface = {
-            key: 'content',
-            value_string: new_String,
-            input_type: 'text',
-            value_boolean: false,
-        };
+ /* useEffect(() => {
+    if (barcodes.length > 0) {
+      // set_Show_Modal_With_QR_Code_State(true);
 
-        return dispatch(update_current_new_note(obj4));
+      set_Camera_Active_State(false);
+      return view_Details(barcodes);
+
+
+    } else {
+
+      // toggle
+      // set_Show_Modal_With_QR_Code_State(false);
+      set_Camera_Active_State(true);
     }
-
-
-
-    const OnChange_Title = (cause: string) => {
-
-
-        const obj4: user_todo_item_payload_interface = {
-            key: 'title',
-            value_string: cause,
-            input_type: 'text',
-            value_boolean: false,
-        };
-
-        return dispatch(update_current_new_note(obj4));
+  }, [
+    current_scan_done,
+  ]);*/
 
 
 
 
 
-    };
-
-    const current_scan_done : boolean =useAppSelector(current_Scan_Loading_State_State);
-    const current_scan_success: string =useAppSelector(current_Item_Scan_Success_success);
 
 
 
-    const deviceWidth = useWindowDimensions().width;
-    const deviceHeight = useWindowDimensions().height;
+
+  console.log("current_scanning_state_State_0: ",current_scanning_state_State_0);
+  console.log("current_scan_success: ",current_scan_success);
+
+  const deviceWidth = useWindowDimensions().width;
+  const deviceHeight = useWindowDimensions().height;
+
+  const [hasPermission, setHasPermission] = React.useState(false);
 
 
-    const [hasPermission, setHasPermission] = React.useState(false);
-
-    const device = useCameraDevice('back')
-    // const devices = useCameraDevices();
-    // const device = devices.back;
-
-    // const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
-    //     checkInverted: true,
-    // });
 
 
-    const frameProcessor = useFrameProcessor((frame:Frame) => {
-        'worklet';
+  const device = useCameraDevice('back')
 
-        const qrCodes = scanQRCodes(frame);
-        console.log(`QR Codes in Frame: ${qrCodes}`);
-    }, []);
+  // - **Barcode (EAN)**: EAN-13 or EAN-8 Barcodes
+  // - **Barcode (Code)**: Code-128, Code-39 or Code-93 Barcodes
+  // - **Barcode (other)**: Codabar, ITF-14, UPC-E or PDF-417 Barcodes
 
-    // const frameProcessor = useFrameProcessor((frame) => {   'worklet'   const faces = scanFaces(frame)   console. log(`Faces: ${faces}`) }, [])
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13','upc-a','ean-8','code-128', 'code-39','code-93','codabar','pdf-417','upc-e','itf'],
+      // codeTypes: ['upc-a'],
+    onCodeScanned: (codes: Code[]) => {
+      dispatch(current_scan_result_found_and_update(codes));
+      console.log(`Scanned ${codes.length} codes!`);
+    },
+  });
+
+  const frameProcessor = useFrameProcessor((frame: Frame) => {
+    'worklet';
+
+    const qrCodes = scanQRCodes(frame);
+    console.log(`QR Codes in Frame: ${qrCodes}`);
+  }, []);
+
+  // const frameProcessor = useFrameProcessor((frame) => {   'worklet'   const faces = scanFaces(frame)   console. log(`Faces: ${faces}`) }, [])
+
+  // const [camera_Active_State, set_Camera_Active_State] =
+  //   useState<boolean>(false);
+
+  const label = current_scan_success ? 'Found' : 'Working';
 
 
-    const [camera_Active_State, set_Camera_Active_State] = useState<boolean>(false);
+  const label_Height= 32;
+  const header_height= 42;
 
+  return (
+    <SafeArea_View_Context
+      style={{
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        flex: 10,
+      }}>
+      <Custom_Header_User_Name
+        name_String={`Scan Page`}
+        font_size={24}
+        total_Height={header_height}
+        total_Width={displayWidth}
+        navigation={navigation}
+        save_before_Leave={before_Going_Prev_Screen}
+        show_border={false}
+      />
 
-    const label= current_scan_success
-        ? "Found"
-        : "Working";
+      {/*Chooose Your Emotoin Modal Begin here*/}
 
+      {/*Chooose Your Emotoin Modal ends here*/}
 
-    return (
+      <Label_Scan_Page
+        comp_Height={label_Height}
+        comp_width={displayWidth}
 
+      />
 
-        <SafeArea_View_Context
-
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          // flex: 10,
+          width: deviceWidth, //"100%",
+          height: displayHeight -(header_height+label_Height), //'100%',
+          // width: "100%",
+          // height: '100%',
+        }}>
+        {device === null ? (
+          <View
             style={{
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                flex: 10,
-            }}
-
-        >
-
-
-            <Custom_Header_User_Name
-                name_String = {`Scan Page`}
-                font_size={24}
-
-                total_Height={displayHeight}
-                total_Width={displayWidth}
-                navigation={navigation}
-                save_before_Leave={before_Going_Prev_Screen}
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              top: deviceHeight / 3,
+              left: deviceWidth / 3,
+            }}>
+            <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
+              device is null
+            </Text>
+          </View>
+        ) : device === undefined ? (
+          <View
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              top: deviceHeight / 3,
+              left: deviceWidth / 3,
+            }}>
+            <ActivityIndicator
+              size="large"
+              color={new_Theme_Place_Holder_Color}
             />
-
-
-            {/*Chooose Your Emotoin Modal Begin here*/}
-
-
-
-
-
-            {/*Chooose Your Emotoin Modal ends here*/}
-
-
-
-            <View
-                style={{
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-
-
-                    // height:  displayHeight/2.8,// from 3.7 on april 12, 2022
-                    width: "100%",
-
-                    paddingBottom: 10,
-
-
-                }}
-            >
-
-
-
-                <View style={{
-
-                    flexDirection: "column",
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    // flex: 10,
-                    width: deviceWidth,//"100%",
-                    height: displayHeight,//'100%',
-                    // width: "100%",
-                    // height: '100%',
-
-                }}>
-                    {
-                        (device === null) ?
-                            (
-                                <View style={{
-                                    flexDirection: "column",
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    position: 'absolute',
-                                    top: deviceHeight / 3,
-                                    left: deviceWidth / 3,
-
-                                }}>
-                                    {/*<ActivityIndicator
-                                    size="large"
-                                    color={new_Theme_Place_Holder_Color}
-                                />*/}
-                                    <Text style={Logger_Scan_Page_Styles.label_Text_Style}>device is null</Text>
-                                </View>
-                            ) : (device === undefined) ?
-                                (
-                                    <View style={{
-
-
-                                        flexDirection: "column",
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        position: 'absolute',
-                                        top: deviceHeight / 3,
-                                        left: deviceWidth / 3,
-
-                                    }}>
-                                        <ActivityIndicator
-                                            size="large"
-                                            color={new_Theme_Place_Holder_Color}
-                                        />
-                                        <Text style={Logger_Scan_Page_Styles.label_Text_Style}>device un-defined</Text>
-                                    </View>
-                                ) : (!hasPermission) ? (
-                                    <View style={{
-
-
-                                        flexDirection: "column",
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        position: 'absolute',
-                                        top: deviceHeight / 3,
-                                        left: deviceWidth / 3,
-
-                                    }}>
-                                        {/*  <ActivityIndicator
+            <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
+              device un-defined
+            </Text>
+          </View>
+        ) : !hasPermission ? (
+          <View
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              top: deviceHeight / 3,
+              left: deviceWidth / 3,
+            }}>
+            {/*  <ActivityIndicator
                                         size="large"
                                         color={new_Theme_Place_Holder_Color}
                                     />*/}
-                                        <Text style={Logger_Scan_Page_Styles.label_Text_Style}>Camera Permission Not
-                                            Available</Text>
-                                    </View>
+            <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
+              Camera Permission Not Available
+            </Text>
+          </View>
+        ) : (
+          <View
+            style={{
+              width: deviceWidth, //"100%",
+              height: displayHeight, //'100%',
 
-                                ) : (
-                                    <View style={{
+              flexDirection: 'column',
+              flex: 10,
 
+            }}>
+            <Camera
+              style={StyleSheet.absoluteFill}
+              device={device}
+              isActive={current_scanning_state_State_0}
+              codeScanner={codeScanner}
+            />
 
-                                        width: deviceWidth,//"100%",
-                                        height: displayHeight,//'100%',
-
-
-                                        flexDirection: "column",
-                                        flex: 10,
-                                        // justifyContent: 'center',
-
-
-                                    }}>
-                                        <Camera
-                                            style={StyleSheet.absoluteFill}
-                                            device={device}
-                                            isActive={camera_Active_State}
-                                            frameProcessor={frameProcessor}
-                                            fps={5}
-                                        />
-
-                                        <View style={{
-                                            alignItems: 'center',
-                                            position: 'absolute',
-                                            bottom: 100,
-                                            // left: 10,
-                                            width: deviceWidth - 40,
-                                            marginHorizontal: 20,
-                                            height: displayHeight / 20,
-                                            // backgroundColor: 'red',
-                                        }}>
-                                            <Text
-                                                style={Logger_Scan_Page_Styles.label_Text_Style}>
-                                                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                                                {/*Checking QR code. Please hold the camera on QR until it's finished processing.*/}
-
-                                                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                                                Scanning QR code. Please point the camera towards the "QR Code", until scanned.
-                                            </Text>
-                                        </View>
-
-
-                                    </View>
-                                )
-                    }
-
-
-                </View>
-
-                <View style={{
-
-                    width: "100%",
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    flex: 2.5,
-                }}>
-
-                </View>
-                <Logger_Create_Note_Button
-                    comp_Height={displayHeight/20}
-                    post_Button_HTTP_Running_State_2={post_Button_HTTP_Running_State}
-                    comp_width={displayWidth}
-                    navigation={navigation}
-
-                />
+            <View
+              style={{
+                alignItems: 'center',
+                position: 'absolute',
+                bottom: 100,
+                // left: 10,
+                width: deviceWidth - 40,
+                marginHorizontal: 20,
+                height: displayHeight / 20,
+                // backgroundColor: 'red',
+              }}>
+              <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
+                {/* eslint-disable-next-line react/no-unescaped-entities */}
+                {/*Checking QR code. Please hold the camera on QR until it's finished processing.*/}
+                {/* eslint-disable-next-line react/no-unescaped-entities */}
+                Scanning QR code. Please point the camera towards the "QR Code",
+                until scanned.
+              </Text>
             </View>
+          </View>
+        )}
+      </View>
 
-
-
-
-            {
-                ( master_Loading_State && (<View
-                        style={[
-                            {
-                                flexDirection: 'column',
-                                bottom: 510,
-                            },
-                            {
-                                position: 'absolute',
-                                left: 0,
-                                right: 0,
-                                top: 100,
-                            },
-                        ]}>
-                        <ActivityIndicator
-                            size="large"
-                            color="black"
-                            // color='crimson'
-                        />
-                    </View>)
-                )
-            }
-
-        </SafeArea_View_Context>
-
-    );
-// NHS ENDS HER..
-
-
+      {master_Loading_State && (
+        <View
+          style={{
+            flexDirection: 'column',
+            bottom: 510,
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 100,
+          }}>
+          <Indicator_Common />
+        </View>
+      )}
+    </SafeArea_View_Context>
+  );
+  // NHS ENDS HER..
 };
 
 const Logger_Scan_Page_Styles = StyleSheet.create({
+  label_Text_Style: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: new_Theme_Place_Holder_Color, //"white",
+  },
 
-    label_Text_Style: {
-        fontSize: 16,
-        fontWeight: "600",
-        color: new_Theme_Place_Holder_Color,//"white",
-    },
+  MiddleTextView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
 
-    MiddleTextView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        alignSelf: "center",
-    },
-
-    MiddleText: {
-        backgroundColor: "transparent",
-        fontSize: 20,
-        textAlign: "center",
-        color: "white",
-    },
-
-
+  MiddleText: {
+    backgroundColor: 'transparent',
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'white',
+  },
 });
 
-
-export  default  Logger_Scan_Page;
-
-
-
-
-
+export default Logger_Scan_Page;
