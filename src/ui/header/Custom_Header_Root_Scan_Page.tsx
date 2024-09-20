@@ -2,16 +2,14 @@ import React from 'react';
 
 import {Pressable, Text, TouchableOpacity, View} from 'react-native';
 
-
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5';
 
 import {useAppSelector} from '../../appStore/app/hooks';
-import {TodoItem} from '../../interfaces/todo/todo_interfaces.ts';
-import {all_todo_Items} from '../../appStore/features/auth/todo_Slice.ts';
-
+import {old_scan_result_data_interface} from '../../interfaces/scan/scan_interfaces.ts';
+import {all_items_where_scan_worked} from '../../appStore/features/scan/scan_Slice.ts';
 
 export interface Custom_Header_Root_Scan_Page_Props {
   page_title: string;
@@ -32,9 +30,6 @@ const Custom_Header_Root_Scan_Page: React.FC<
   save_before_Leave,
   show_back_button,
 }) => {
-  const all_todos: TodoItem[] = useAppSelector(all_todo_Items);
-
-
   const read_all_Button_Pressed_2 = async () => {
     // return
     await read_all_Button_Pressed();
@@ -44,6 +39,9 @@ const Custom_Header_Root_Scan_Page: React.FC<
     // return
     await save_before_Leave();
   };
+  const all_scanned_items: old_scan_result_data_interface[] = useAppSelector(
+    all_items_where_scan_worked,
+  );
 
   const back_Button_width = total_Width / 8;
 
@@ -131,7 +129,7 @@ const Custom_Header_Root_Scan_Page: React.FC<
                 alignItems: 'center',
                 flex: 1.5, // 1.5+ 3.8 = 5.3 ;;; flex:5.3, // 5.3+1.2 = 6.5;
               }}>
-              {all_todos.length === 0 ? null : (
+              {all_scanned_items.length === 0 ? null : (
                 <View
                   style={{
                     flexDirection: 'column',
@@ -152,7 +150,7 @@ const Custom_Header_Root_Scan_Page: React.FC<
                       textAlign: 'left',
                       fontSize: 14,
                     }}>
-                    {all_todos.length}
+                    {all_scanned_items.length}
                   </Text>
                 </View>
               )}
@@ -204,7 +202,7 @@ const Custom_Header_Root_Scan_Page: React.FC<
                   width: '100%',
                 },
               ]}>
-              {all_todos.length === 0 ? null : (
+              {all_scanned_items.length === 0 ? null : (
                 <Text
                   style={{
                     fontSize: 15,

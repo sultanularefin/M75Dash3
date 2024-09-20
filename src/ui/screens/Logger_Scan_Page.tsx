@@ -22,11 +22,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 
-import {
-  Rect,
-  SafeAreaView as SafeArea_View_Context,
-  useSafeAreaFrame,
-} from 'react-native-safe-area-context';
+
 
 import {
   useAppDispatch,
@@ -36,7 +32,6 @@ import Custom_Header_User_Name from '../header/Custom_Header_User_Name.tsx';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import Snackbar from 'react-native-snackbar';
 
-import Logger_Create_Note_Button from '../buttons/Logger_Create_Note_Button.tsx';
 import {
   all_items_where_scan_worked,
   current_Item_Scan_Success_success, current_Item_When_Scan_Succeeded,
@@ -65,7 +60,7 @@ import {
 } from 'react-native-permissions';
 import Camera_Blocked_IOS from '../../permissions/ios/Camera_Blocked_IOS.tsx';
 import {Code} from 'react-native-vision-camera/src/types/CodeScanner.ts';
-import Label_Scan_Page from '../buttons/Label_Scan_Page.tsx';
+import Label_Component_Scan_P from '../buttons/Label_Component_Scan_P.tsx';
 import Indicator_Common from '../indicator/Indicator_Common.tsx';
 import {old_scan_result_data_interface} from "../../interfaces/scan/scan_interfaces.ts";
 
@@ -271,33 +266,28 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
   const label = current_scan_success ? 'Found' : 'Working';
 
 
-  const label_Height= 32;
-  const header_height= 42;
+  const label_Height= 42;
+  const header_height= 40;
+  const camera_height = displayHeight -(header_height+label_Height);
+
+  console.log("displayHeight: ",displayHeight);
+  console.log("camera_height: ",camera_height);
+
+
 
   return (
-    <SafeArea_View_Context
+    <SafeAreaView
       style={{
-        flexDirection: 'column',
+        flexDirection: 'column-reverse',
         justifyContent: 'flex-start',
-        flex: 10,
+        height: displayHeight,
+        position: 'relative',
       }}>
-      <Custom_Header_User_Name
-        name_String={`Scan Page`}
-        font_size={24}
-        total_Height={header_height}
-        total_Width={displayWidth}
-        navigation={navigation}
-        save_before_Leave={before_Going_Prev_Screen}
-        show_border={false}
-      />
 
-      {/*Chooose Your Emotoin Modal Begin here*/}
-
-      {/*Chooose Your Emotoin Modal ends here*/}
-
-      <Label_Scan_Page
-        comp_Height={label_Height}
-        comp_width={displayWidth}
+      <Label_Component_Scan_P
+          comp_Height={label_Height}
+          comp_width={displayWidth}
+          zindex={4}
 
       />
 
@@ -306,35 +296,35 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          // flex: 10,
           width: deviceWidth, //"100%",
-          height: displayHeight -(header_height+label_Height), //'100%',
-          // width: "100%",
-          // height: '100%',
+          height: camera_height, //'100%',
+          position: 'relative',
         }}>
-        {device === null ? (
+        {(device === null) ? (
           <View
             style={{
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              position: 'absolute',
+              position: 'relative',
               top: deviceHeight / 3,
               left: deviceWidth / 3,
+              height: camera_height,
             }}>
             <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
               device is null
             </Text>
           </View>
-        ) : device === undefined ? (
+        ) : (device === undefined) ? (
           <View
             style={{
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              position: 'absolute',
+              position: 'relative',
               top: deviceHeight / 3,
               left: deviceWidth / 3,
+              height: camera_height,
             }}>
             <ActivityIndicator
               size="large"
@@ -344,20 +334,17 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
               device un-defined
             </Text>
           </View>
-        ) : !hasPermission ? (
+        ) : (!hasPermission) ? (
           <View
             style={{
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              position: 'absolute',
+              position: 'relative',
               top: deviceHeight / 3,
               left: deviceWidth / 3,
+              height: camera_height,
             }}>
-            {/*  <ActivityIndicator
-                                        size="large"
-                                        color={new_Theme_Place_Holder_Color}
-                                    />*/}
             <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
               Camera Permission Not Available
             </Text>
@@ -365,15 +352,21 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
         ) : (
           <View
             style={{
-              width: deviceWidth, //"100%",
-              height: displayHeight, //'100%',
+              width: deviceWidth,
+              height: camera_height,
 
+              position: "relative",
+              display: 'flex',
               flexDirection: 'column',
-              flex: 10,
 
             }}>
             <Camera
-              style={StyleSheet.absoluteFill}
+              style={{
+                height: camera_height,
+                position: "relative"
+
+              }}
+              enableLocation={false}
               device={device}
               isActive={current_scanning_state_State_0}
               codeScanner={codeScanner}
@@ -382,13 +375,14 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
             <View
               style={{
                 alignItems: 'center',
-                position: 'absolute',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
                 bottom: 100,
                 // left: 10,
                 width: deviceWidth - 40,
                 marginHorizontal: 20,
                 height: displayHeight / 20,
-                // backgroundColor: 'red',
               }}>
               <Text style={Logger_Scan_Page_Styles.label_Text_Style}>
                 {/* eslint-disable-next-line react/no-unescaped-entities */}
@@ -415,7 +409,26 @@ const Logger_Scan_Page: React.FC<Logger_Scan_Page_Props> = ({navigation}) => {
           <Indicator_Common />
         </View>
       )}
-    </SafeArea_View_Context>
+
+
+
+      {/*Chooose Your Emotoin Modal Begin here*/}
+
+      {/*Chooose Your Emotoin Modal ends here*/}
+
+
+
+      <Custom_Header_User_Name
+          name_String={`Scan Page`}
+          font_size={24}
+          total_Height={header_height}
+          total_Width={displayWidth}
+          navigation={navigation}
+          save_before_Leave={before_Going_Prev_Screen}
+          show_border={false}
+          zindex={4}
+      />
+    </SafeAreaView>
   );
   // NHS ENDS HER..
 };
@@ -427,19 +440,6 @@ const Logger_Scan_Page_Styles = StyleSheet.create({
     color: new_Theme_Place_Holder_Color, //"white",
   },
 
-  MiddleTextView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-
-  MiddleText: {
-    backgroundColor: 'transparent',
-    fontSize: 20,
-    textAlign: 'center',
-    color: 'white',
-  },
 });
 
 export default Logger_Scan_Page;

@@ -6,14 +6,12 @@ import {Pressable, Text, TouchableOpacity, View} from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import {CommonActions} from "@react-navigation/native";
-import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5';
-// import {notification_Counter_Value_Response_Interface} from "../../appStore/Reducers/authSlice";
-import {useAppSelector} from '../../appStore/app/hooks';
-import {TodoItem} from '../../interfaces/todo/todo_interfaces.ts';
-import {all_todo_Items} from '../../appStore/features/auth/todo_Slice.ts';
 
-// import {select_Notification_Count_Response_And_Logger_ID} from "../../appStore/Reducers/notification_Slice";
+import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5';
+
+import {useAppSelector} from '../../appStore/app/hooks';
+import {old_scan_result_data_interface} from '../../interfaces/scan/scan_interfaces.ts';
+import {all_items_where_scan_worked} from '../../appStore/features/scan/scan_Slice.ts';
 
 export interface Custom_Header_Notifications_Page_Props {
   page_title: string;
@@ -36,10 +34,6 @@ const Custom_Header_TODO_Page: React.FC<
   save_before_Leave,
   show_back_button,
 }) => {
-  const all_todos: TodoItem[] = useAppSelector(all_todo_Items);
-
-  // const notification_Value_And_Logger_ID: notification_Counter_Value_Response_Interface = useAppSelector(select_Notification_Count_Response_And_Logger_ID);
-
   const read_all_Button_Pressed_2 = async () => {
     // return
     await read_all_Button_Pressed();
@@ -51,6 +45,9 @@ const Custom_Header_TODO_Page: React.FC<
   };
 
   const back_Button_width = total_Width / 8;
+  const all_scanned_items: old_scan_result_data_interface[] = useAppSelector(
+    all_items_where_scan_worked,
+  );
 
   return (
     <View
@@ -136,7 +133,7 @@ const Custom_Header_TODO_Page: React.FC<
                 alignItems: 'center',
                 flex: 1.5, // 1.5+ 3.8 = 5.3 ;;; flex:5.3, // 5.3+1.2 = 6.5;
               }}>
-              {all_todos.length === 0 ? null : (
+              {all_scanned_items.length === 0 ? null : (
                 <View
                   style={{
                     flexDirection: 'column',
@@ -157,7 +154,7 @@ const Custom_Header_TODO_Page: React.FC<
                       textAlign: 'left',
                       fontSize: 14,
                     }}>
-                    {all_todos.length}
+                    {all_scanned_items.length}
                   </Text>
                 </View>
               )}
@@ -209,7 +206,7 @@ const Custom_Header_TODO_Page: React.FC<
                   width: '100%',
                 },
               ]}>
-              {all_todos.length === 0 ? null : (
+              {all_scanned_items.length === 0 ? null : (
                 <Text
                   style={{
                     fontSize: 15,

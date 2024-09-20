@@ -1,19 +1,22 @@
 import React, {useRef} from 'react';
 
 import {
-    Alert,
-    Animated,
-    I18nManager,
-    Image, Pressable,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Animated,
+  I18nManager,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import hairlineWidth = StyleSheet.hairlineWidth;
 import {old_scan_result_data_interface} from '../../interfaces/scan/scan_interfaces.ts';
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useAppDispatch} from '../../appStore/app/hooks.ts';
+import {delete_one_scanned_item} from "../../appStore/features/scan/scan_Slice.ts";
 
 // import {TodoItem} from '../../interfaces/todo/todo_interfaces.ts';
 // import ToDo_Details_Comp from './children/ToDo_Details_Comp.tsx';
@@ -37,6 +40,7 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
   const indexPrimary = index;
 
   const first_part_height = comp_Height / 3;
+  const dispatch = useAppDispatch();
 
   return (
     <View
@@ -72,65 +76,61 @@ const One_Scan_Item: React.FC<One_Scan_Item_Props> = ({
         alignItems: 'flex-start',
         alignSelf: 'center',
       }}>
-
-        <View style={{
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            alignSelf: 'center',
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          alignSelf: 'center',
         }}>
-            <View
+        <View
+          style={{
+            width: t_width - (20 + 60),
+          }}>
+          <Text style={One_Note_Styles.description}>
+            Type:{' '}
+            {One_Scan_Item_Data?.type
+              ? One_Scan_Item_Data.type.length < 100
+                ? One_Scan_Item_Data.type
+                : `${One_Scan_Item_Data.type.slice(80)}...`
+              : null}
+            {/*{One_Scan_Item_Data.content}*/}
+          </Text>
 
-                style={{
-                    width: t_width - (20+60),
-
-                }}
-            >
-                <Text style={One_Note_Styles.description}>
-                    Type:{' '}
-                    {One_Scan_Item_Data?.type
-                        ? One_Scan_Item_Data.type.length < 100
-                            ? One_Scan_Item_Data.type
-                            : `${One_Scan_Item_Data.type.slice(80)}...`
-                        : null}
-                    {/*{One_Scan_Item_Data.content}*/}
-                </Text>
-
-                <Text style={One_Note_Styles.title} key={One_Scan_Item_Data.value}>
-                    Value:{' '}
-                    {One_Scan_Item_Data?.value
-                        ? One_Scan_Item_Data.value.length < 60
-                            ? One_Scan_Item_Data.value
-                            : `${One_Scan_Item_Data.value.slice(30)}...`
-                        : null}
-                </Text>
-            </View>
-
-
-            <Pressable
-                style={({pressed}) => [
-                    {
-                        backgroundColor: pressed ? 'lightsteelblue' : 'transparent',
-
-                    },
-                ]}
-                onPress={() => {
-                    console.log('pressed');
-                    // dispatch(save_new_note_to_store_1(true));
-                }}>
-                {({pressed}) => (
-                    <Ionicons
-                        size={60}
-                        style={{
-                            color: 'cyan',
-                            textAlign: 'center',
-                            alignSelf: 'center',
-                        }}
-                        name={'remove-sharp'}
-                    />
-                )}
-            </Pressable>
+          <Text style={One_Note_Styles.title} key={One_Scan_Item_Data.value}>
+            Value:{' '}
+            {One_Scan_Item_Data?.value
+              ? One_Scan_Item_Data.value.length < 60
+                ? One_Scan_Item_Data.value
+                : `${One_Scan_Item_Data.value.slice(30)}...`
+              : null}
+          </Text>
         </View>
+
+        <Pressable
+          style={({pressed}) => [
+            {
+              backgroundColor: pressed ? 'lightsteelblue' : 'transparent',
+            },
+          ]}
+          onPress={() => {
+            console.log('pressed');
+            dispatch(delete_one_scanned_item(One_Scan_Item_Data));
+            return;
+          }}>
+          {({pressed}) => (
+            <Ionicons
+              size={60}
+              style={{
+                color: 'cyan',
+                textAlign: 'center',
+                alignSelf: 'center',
+              }}
+              name={'remove-sharp'}
+            />
+          )}
+        </Pressable>
+      </View>
 
       {/*feed Content and Time begins here*/}
     </View>

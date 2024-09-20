@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 import {RootState} from '../../app/store';
 import {baseInterface} from '../../../interfaces/baseInterface.ts';
-import {edit_todo_item_payload_interface} from '../../../interfaces/todo/todo_interfaces.ts';
+
 import {
   Code,
   CodeType,
@@ -34,6 +34,57 @@ const initialState: todo__State_Interface = {
 
 const initial_State0 = initialState;
 
+
+const delete_one_scanned_item_From_Scanning_Page_2  = (
+    state: any,
+    action: PayloadAction<boolean>,
+) => {
+
+  console.log("at <<delete_one_scanned_item_From_Scanning_Page_2>> and payload.action:",action.payload);
+
+
+  const temp_current_item = state.current_Item;
+
+
+  console.log("temp_current_item[0].value: ",temp_current_item[0].value);
+  const old_scan_items = state.scan_Items;
+
+  state.scan_Items = old_scan_items.filter(
+      (one_todo: old_scan_result_data_interface) => one_todo.value !== temp_current_item[0].value,
+  ); // put here thus
+
+
+
+  state.scanning_state = true;
+  state.current_Item_Scan_Success = false;
+
+  state.current_Item =[];
+  // return 1;
+
+
+};
+
+
+
+const delete_one_scanned_item_2 = (
+  state: any,
+  action: PayloadAction<old_scan_result_data_interface>,
+) => {
+
+
+  const old_scan_items = state.scan_Items;
+
+
+
+  state.scan_Items = old_scan_items.filter(
+    (one_todo: old_scan_result_data_interface) => one_todo.value !== action.payload.value,
+  ); // put here thus
+
+
+  state.current_Item = [];
+  // return 1;
+};
+
 const update_scanning_state_2 = (
   state: any,
   action: PayloadAction<boolean>,
@@ -41,6 +92,8 @@ const update_scanning_state_2 = (
   if (action.payload) {
     state.scanning_state = true;
     state.current_Item_Scan_Success = false;
+
+
   } else {
     state.scanning_state = false;
     state.current_Item_Scan_Success = false;
@@ -48,8 +101,7 @@ const update_scanning_state_2 = (
 };
 
 const get_all__scan__items_2 = (state: any, action: PayloadAction<boolean>) => {
-  // state.todo_loading_state = false;
-  // const temp_up__Voter_Full_Name_String: string = action.payload;
+
 };
 
 const delete_all_scan_items_2 = (
@@ -75,22 +127,13 @@ const current_scan_result_found_and_update_2 = (
 
   const old_items_temp = state.scan_Items;
 
-
-  if(old_items_temp.length > 0) {
-
+  if (old_items_temp.length > 0) {
     old_items_temp.unshift(new_scan_item);
     state.scan_Items = old_items_temp;
-
-  }
-  else{
+  } else {
     old_items_temp.push(new_scan_item);
     state.scan_Items = old_items_temp;
   }
-
-
-
-
-
 
   state.current_Item = found_Code;
 
@@ -107,15 +150,24 @@ const scan_Slice = createSlice({
     delete_all_scan_items: delete_all_scan_items_2,
     get_all_scan_items: get_all__scan__items_2,
     update_scanning_state: update_scanning_state_2,
+    delete_one_scanned_item: delete_one_scanned_item_2,
+    delete_one_scanned_item_From_Scanning_Page: delete_one_scanned_item_From_Scanning_Page_2,
   },
   extraReducers: builder => {},
 });
 
 export const {
   current_scan_result_found_and_update,
-  delete_all_scan_items,
+
   get_all_scan_items,
   update_scanning_state,
+
+  // delete begins here
+  delete_all_scan_items,
+  delete_one_scanned_item,
+  delete_one_scanned_item_From_Scanning_Page,
+
+  // delete ends here
 } = scan_Slice.actions;
 
 export const select_logger_person_data = (state: RootState) =>

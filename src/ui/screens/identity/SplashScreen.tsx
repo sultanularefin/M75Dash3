@@ -25,7 +25,7 @@ import {Native_Root_Stack_ParamList} from '../../../App';
 // import ToDo_Home from '../ToDo_Home.tsx';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {populate_items_to_empty_array} from '../../../appStore/features/auth/todo_Slice.ts';
+
 import Indicator_With_Loading_TextBottom from '../../indicator/Indicator_With_Loading_TextBottom.tsx';
 import {ukbd_navy_blue} from '../../ui_utils/important_Colors.ts';
 

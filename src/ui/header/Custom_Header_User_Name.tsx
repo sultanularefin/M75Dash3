@@ -7,8 +7,6 @@ import {
 } from "react-native";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
-// import {Comments_CustomHeader_Props} from "../../home_Tabs/comments__Sub_Components/Comments_CustomHeader";
-
 
 
 export interface Custom_Header_User_Name_Props{
@@ -19,6 +17,7 @@ export interface Custom_Header_User_Name_Props{
     navigation: any,
     save_before_Leave: ()=>void,
     show_border: boolean,
+    zindex:number,
 
 }
 
@@ -32,10 +31,9 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                                                                               total_Width,
                                                                               save_before_Leave,
                                                                               show_border,
+                                                                              zindex,
 
                                                                           }) => {
-// const Custom_Header_User_Name= () => {
-
 
     const save_before_Leave_2= async ()=>{
         // return
@@ -49,8 +47,9 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
             height: total_Height,
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            // backgroundColor: 'transparent',
             width: total_Width,
+            zIndex: zindex,
+            backgroundColor:'white',
 
 
         }}>
@@ -58,15 +57,10 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
 
             <View
                 style={{
-                    // flex: 1,
                     height: '100%',
                     flexDirection: 'row',
                     justifyContent: 'flex-start',
                     width: total_Width,
-                    // borderBottomWidth: 1,
-                    // borderTopWidth: 1,
-                    // borderTopColor: '#000a12',
-                    // borderBottomColor: '#000a12',
                     borderBottomWidth: show_border ? 1 : 0,
                     borderTopWidth: show_border ? 1 : 0,
                     borderTopColor: show_border ? '#000a12' : 'transparent',
@@ -82,13 +76,8 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                     style={{
                         flexDirection: 'column',
                         justifyContent: 'center',
-                        // backgroundColor: 'white',
-                        // backgroundColor: 'red',
                         paddingStart: 16,
                         width: total_Width/6,
-
-
-
                     }}
                 >
 
@@ -107,19 +96,12 @@ const Custom_Header_User_Name: React.FC<Custom_Header_User_Name_Props> = ({
                     </TouchableOpacity>
                 </View>
 
-
-
                 <View style={{
 
                     flexDirection: 'column',
                     justifyContent: 'center',
-                    // backgroundColor: 'white',
-                    // backgroundColor: 'gold',
                     alignItems: 'center',
-                    // paddingStart: 16,
                     width: (total_Width- (total_Width/6)*2),
-
-
                 }}
                 >
                     <Text style={{
